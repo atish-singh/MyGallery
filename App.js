@@ -1,20 +1,35 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useColorScheme } from 'react-native';
+import GalleryScreen from './src/screens/GalleryScreen';
+import AddImageScreen from './src/screens/AddImageScreen';
+import { ThemeProvider } from './src/theme/ThemeContext';
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+const Tabs = createBottomTabNavigator();
+
+function RootTabs() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Tabs.Navigator screenOptions={{ headerShown: false }}>
+      <Tabs.Screen name="Gallery" component={GalleryScreen} />
+      <Tabs.Screen name="Add" component={AddImageScreen} />
+    </Tabs.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  const scheme = useColorScheme();
+  return (
+    <ThemeProvider>
+      <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack.Navigator>
+          <Stack.Screen name="Root" component={RootTabs} options={{ headerShown: false }} />
+        </Stack.Navigator>
+        <StatusBar style="auto" />
+      </NavigationContainer>
+    </ThemeProvider>
+  );
+}
